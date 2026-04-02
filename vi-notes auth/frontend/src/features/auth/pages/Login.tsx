@@ -10,11 +10,17 @@ const Login = () => {
 
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await handleLogin({ email, password })
-    navigate("/")
+    setError(null)
+    try {
+      await handleLogin({ email, password })
+      navigate("/")
+    } catch (err: any) {
+      setError(err?.response?.data?.message || err?.message || "An error occurred during login")
+    }
   }
 
   if (loading) {
@@ -31,6 +37,7 @@ const Login = () => {
     <main>
       <div className="form-container">
         <h1>Login</h1>
+        {error && <p style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}>{error}</p>}
         <form onSubmit={handleSubmit}>
 
           <div className="input-group">
